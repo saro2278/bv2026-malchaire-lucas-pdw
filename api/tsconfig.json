@@ -13,10 +13,18 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@core/*": ["./src/core/*"],
+      "@feature/*": ["./src/feature/*"],
+      "@root/*": ["./src/root/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "types": ["vitest/globals", "node"]
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false
   }
 }
