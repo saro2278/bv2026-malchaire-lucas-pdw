@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AppMode } from '../data/enum';
+import { AppMode, LogLevel } from '../data/enum';
 const appModeSchema = z
   .enum(['DEV', 'TEST', 'PROD', 'development', 'test', 'production'])
   .transform((value) => {
@@ -18,10 +18,25 @@ const appModeSchema = z
     return value as AppMode;
   });
 
-const environmentSchema = z.object({
-  APP_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  NODE_ENV: appModeSchema,
-});
+const environmentSchema = z
+  .object({
+    APP_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    NODE_ENV: appModeSchema,
+    LOG_LEVEL: z.enum(LogLevel).default(LogLevel.Info),
+    DB_SYNC: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((value) => value === 'true'),
+  })
+  .superRefine((env, ctx) => {
+    if (env.NODE_ENV === AppMode.Prod && env.DB_SYNC) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['DB_SYNC'],
+        message: 'DB_SYNC doit être false en production.',
+      });
+    }
+  });
 
 export type ValidatedEnvironment = z.infer<typeof environmentSchema>;
 
