@@ -21,6 +21,12 @@ const appModeSchema = z
 const environmentSchema = z
   .object({
     APP_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    APP_HTTP_PAYLOAD_ERROR_CODE: z.coerce
+    .number()
+    .int()
+    .min(400)
+    .max(499)
+    .default(422),
     NODE_ENV: appModeSchema,
     LOG_LEVEL: z.enum(LogLevel).default(LogLevel.Info),
     DB_SYNC: z

@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from '@common/config/app-config.module';
 import { AppLoggerModule } from '../common/logger/app-logger.module';
+import { ApiInterceptor } from '../common/api/interceptor/api.interceptor';
+import { HttpExceptionFilter } from '../common/api/filter/http-exception.filter';
 
 @Module({})
 export class AppModule {
@@ -11,7 +13,7 @@ export class AppModule {
       module: AppModule,
       imports: [AppConfigModule.register(), AppLoggerModule],
       controllers: [AppController],
-      providers: [AppService],
+      providers: [AppService, ApiInterceptor, HttpExceptionFilter],
     };
   }
 }

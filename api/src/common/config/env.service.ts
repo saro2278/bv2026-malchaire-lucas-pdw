@@ -14,6 +14,10 @@ export class EnvService {
     return this.get(ConfigKey.Port);
   }
 
+  get httpPayloadErrorStatusCode(): number {
+    return this.get(ConfigKey.AppHttpPayloadErrorCode);
+  }
+
   get logLevel(): LogLevel {
   return this.get(ConfigKey.LogLevel);
 }
