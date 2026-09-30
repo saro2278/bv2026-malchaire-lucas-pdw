@@ -29,6 +29,23 @@ const environmentSchema = z
     .default(422),
     NODE_ENV: appModeSchema,
     LOG_LEVEL: z.enum(LogLevel).default(LogLevel.Info),
+    DB_TYPE: z.literal('postgres').default('postgres'),
+DB_HOST: z.string().min(1).default('localhost'),
+DB_PORT: z.coerce.number().int().min(1).max(65535).default(5432),
+DB_USER: z.string().min(1),
+DB_PASSWORD: z.string().min(1),
+DB_DATABASE: z.string().min(1),
+DB_SCHEMA: z.string().min(1).default('public'),
+
+DB_MIGRATION: z
+  .enum(['true', 'false'])
+  .default('false')
+  .transform((value) => value === 'true'),
+
+DB_LOG: z
+  .enum(['true', 'false'])
+  .default('false')
+  .transform((value) => value === 'true'),
     DB_SYNC: z
       .enum(['true', 'false'])
       .default('false')
