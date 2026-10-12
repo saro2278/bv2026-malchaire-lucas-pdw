@@ -10,7 +10,7 @@ export class AccountEntity extends BasePersistenceEntity {
     enum: AccountStatus,
     default: AccountStatus.Active,
   })
-  status!: AccountStatus;
+  status!: AccountStatus;hhd
 
   @Column({
     name: 'anonymized_at',
