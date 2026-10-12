@@ -72,6 +72,20 @@ private static toMachineReadableMessage(
   name = name.replace(/_/g, '-');
   name = name.toLowerCase();
 
-  return 'api.validation.' + name;
+  private static toMachineReadableMessage(
+    constraint: string,
+    message: string,
+): string {
+    if (message.startsWith('api.')) {
+        return message;
+    }
+
+    const name = constraint
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .replace(/_/g, '-')
+        .toLowerCase();
+
+    return `api.common.validation.error.${kebabConstraint}`;
+}
 }
 }
