@@ -1,7 +1,7 @@
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Repository } from 'typeorm';
 
 import { ApiCodeResponse } from '../../common/api/data/enum/api-code-response.enum';
-import { ApiException } from '../../common/api/data/exception/api-exception';
 import { AccountService } from './account.service';
 import { AccountEntity } from './data/entity/account.entity';
 import { AccountStatus } from './data/enum/account-status.enum';
@@ -9,12 +9,15 @@ import { AccountStatus } from './data/enum/account-status.enum';
 describe('AccountService', () => {
   const accountId = '01ARZ3NDEKTSV4RRFFQ69G5FAV';
 
+  let accountToReturn: AccountEntity | null;
   let repository: Pick<Repository<AccountEntity>, 'findOneBy'>;
   let service: AccountService;
 
   beforeEach(() => {
+    accountToReturn = null;
+
     repository = {
-      findOneBy: jest.fn(),
+      findOneBy: async () => accountToReturn,
     };
 
     service = new AccountService(repository as Repository<AccountEntity>);
@@ -24,7 +27,7 @@ describe('AccountService', () => {
     const createdAt = new Date('2026-09-30T12:00:00.000Z');
     const updatedAt = new Date('2026-09-30T13:00:00.000Z');
 
-    const account = Object.assign(new AccountEntity(), {
+    accountToReturn = Object.assign(new AccountEntity(), {
       id: accountId,
       status: AccountStatus.Active,
       anonymizedAt: null,
@@ -32,8 +35,6 @@ describe('AccountService', () => {
       updatedAt,
       version: 1,
     });
-
-    jest.mocked(repository.findOneBy).mockResolvedValue(account);
 
     await expect(service.me(accountId)).resolves.toEqual({
       id: accountId,
@@ -44,9 +45,7 @@ describe('AccountService', () => {
   });
 
   it('throws an API error when the account does not exist', async () => {
-    jest.mocked(repository.findOneBy).mockResolvedValue(null);
-
-    await expect(service.me(accountId)).rejects.toMatchObject<ApiException>({
+    await expect(service.me(accountId)).rejects.toMatchObject({
       apiCode: ApiCodeResponse.AccountNotFound,
     });
   });
