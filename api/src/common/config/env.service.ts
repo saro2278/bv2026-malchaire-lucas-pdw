@@ -14,6 +14,10 @@ export class EnvService {
     return this.get(ConfigKey.Port);
   }
 
+  get appBaseUrl(): string {
+  return this.get(ConfigKey.AppBaseUrl);
+}
+
   get httpPayloadErrorStatusCode(): number {
     return this.get(ConfigKey.AppHttpPayloadErrorCode);
   }

@@ -19,73 +19,61 @@ export class ValidationException extends ApiException<null> {
   }
 
   static fromClassValidatorErrors(
-  errors: ValidationError[],
-  statusCode: HttpStatus = HttpStatus.UNPROCESSABLE_ENTITY,
-): ValidationException {
-  const validationErrors: ApiValidationError[] = [];
+    errors: ValidationError[],
+    statusCode: HttpStatus = HttpStatus.UNPROCESSABLE_ENTITY,
+  ): ValidationException {
+    const validationErrors: ApiValidationError[] = [];
 
-  for (const error of errors) {
-    const convertedError = ValidationException.mapValidationError(error);
-    validationErrors.push(convertedError);
-  }
-
-  return new ValidationException(validationErrors, statusCode);
-}
-
-private static mapValidationError(
-  error: ValidationError,
-): ApiValidationError {
-  const convertedError = new ApiValidationError();
-
-  convertedError.property = error.property;
-
-  if (error.constraints !== undefined) {
-  for (const [constraint, message] of Object.entries(error.constraints)) {
-    const convertedMessage =
-      ValidationException.toMachineReadableMessage(constraint, message);
-
-    convertedError.messages.push(convertedMessage);
-  }
-}
-
-  if (error.children !== undefined && error.children.length > 0) {
-    convertedError.children = [];
-
-    for (const child of error.children) {
-      const convertedChild = ValidationException.mapValidationError(child);
-      convertedError.children.push(convertedChild);
+    for (const error of errors) {
+      const convertedError = ValidationException.mapValidationError(error);
+      validationErrors.push(convertedError);
     }
+
+    return new ValidationException(validationErrors, statusCode);
   }
 
-  return convertedError;
-  
-}
-private static toMachineReadableMessage(
-  constraint: string,
-  message: string,
-): string {
-  if (message.startsWith('api.')) {
-    return message;
-  }
+  private static mapValidationError(
+    error: ValidationError,
+  ): ApiValidationError {
+    const convertedError = new ApiValidationError();
 
-  let name = constraint.replace(/([a-z])([A-Z])/g, '$1-$2');
-  name = name.replace(/_/g, '-');
-  name = name.toLowerCase();
+    convertedError.property = error.property;
+
+    if (error.constraints !== undefined) {
+      for (const [constraint, message] of Object.entries(error.constraints)) {
+        const convertedMessage =
+          ValidationException.toMachineReadableMessage(constraint, message);
+
+        convertedError.messages.push(convertedMessage);
+      }
+    }
+
+    if (error.children !== undefined && error.children.length > 0) {
+      convertedError.children = [];
+
+      for (const child of error.children) {
+        const convertedChild =
+          ValidationException.mapValidationError(child);
+
+        convertedError.children.push(convertedChild);
+      }
+    }
+
+    return convertedError;
+  }
 
   private static toMachineReadableMessage(
     constraint: string,
     message: string,
-): string {
+  ): string {
     if (message.startsWith('api.')) {
-        return message;
+      return message;
     }
 
-    const name = constraint
-        .replace(/([a-z])([A-Z])/g, '$1-$2')
-        .replace(/_/g, '-')
-        .toLowerCase();
+    let name = constraint.replace(/([a-z])([A-Z])/g, '$1-$2');
+    name = name.replace(/_/g, '-');
+    name = name.toLowerCase();
 
-    return `api.common.validation.error.${kebabConstraint}`;
-}
-}
+    return 'api.common.validation.error.' + name;
+  }
 }

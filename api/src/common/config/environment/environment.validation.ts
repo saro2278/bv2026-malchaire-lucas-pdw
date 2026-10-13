@@ -21,6 +21,7 @@ const appModeSchema = z
 const environmentSchema = z
   .object({
     APP_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    APP_BASE_URL: z.string().min(1).default('api'),
     APP_HTTP_PAYLOAD_ERROR_CODE: z.coerce
     .number()
     .int()

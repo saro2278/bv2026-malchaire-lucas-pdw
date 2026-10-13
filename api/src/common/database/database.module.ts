@@ -12,6 +12,7 @@ import { createTypeOrmOptions } from './typeorm/typeorm-options.factory';
         return createTypeOrmOptions({
           NODE_ENV: env.get('NODE_ENV'),
           APP_PORT: env.get('APP_PORT'),
+          APP_BASE_URL: env.get('APP_BASE_URL'),
           APP_HTTP_PAYLOAD_ERROR_CODE: env.get(
             'APP_HTTP_PAYLOAD_ERROR_CODE',
           ),

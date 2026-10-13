@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
 
@@ -18,6 +18,13 @@ const bootstrap = async () => {
   app.useLogger(app.get(Logger));
 
   const envService = app.get(EnvService);
+
+  app.setGlobalPrefix(envService.appBaseUrl, {
+  exclude: [
+    { path: 'health/live', method: RequestMethod.GET },
+    { path: 'health/ready', method: RequestMethod.GET },
+  ],
+});
 
   app.useGlobalPipes(
     new ValidationPipe({
