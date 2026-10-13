@@ -15,6 +15,21 @@ const sensitiveFields = [
   'databasePassword',
 ];
 
+const redactPaths = [
+  'req.headers.authorization',
+  'req.headers.cookie',
+  'res.headers["set-cookie"]',
+];
+
+for (const field of sensitiveFields) {
+  redactPaths.push(field);
+  redactPaths.push(`*.${field}`);
+  redactPaths.push(`req.body.${field}`);
+  redactPaths.push(`req.query.${field}`);
+  redactPaths.push(`req.body.*.${field}`);
+  redactPaths.push(`req.query.*.${field}`);
+}
+
 @Module({
   imports: [
     LoggerModule.forRootAsync({
@@ -47,12 +62,14 @@ const sensitiveFields = [
 
           genReqId: (req, res) => {
             const incomingId = req.headers['x-request-id'];
+            let requestId = createUlid();
 
-            const requestId =
+            if (
               typeof incomingId === 'string' &&
               ULID_REGEX.test(incomingId)
-                ? incomingId
-                : createUlid();
+            ) {
+              requestId = incomingId;
+            }
 
             res.setHeader('X-Request-Id', requestId);
 
@@ -60,19 +77,7 @@ const sensitiveFields = [
           },
 
           redact: {
-            paths: [
-              'req.headers.authorization',
-              'req.headers.cookie',
-              'res.headers["set-cookie"]',
-              ...sensitiveFields.flatMap((field) => [
-                field,
-                `*.${field}`,
-                `req.body.${field}`,
-                `req.query.${field}`,
-                `req.body.*.${field}`,
-                `req.query.*.${field}`,
-              ]),
-            ],
+            paths: redactPaths,
             censor: '[REDACTED]',
           },
         },
