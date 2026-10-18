@@ -2,10 +2,10 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { AccountEntity } from './data/entity/account.entity';
-import { AccountResponseDto } from './data/dto/response/account-response.dto';
-import { ApiException } from '../../common/api/data/exception/api-exception';
 import { ApiCodeResponse } from '../../common/api/data/enum/api-code-response.enum';
+import { ApiException } from '../../common/api/data/exception/api-exception';
+import { AccountResponseDto } from './data/dto/response/account-response.dto';
+import { AccountEntity } from './data/entity/account.entity';
 
 @Injectable()
 export class AccountService {
@@ -41,11 +41,11 @@ export class AccountService {
     };
   }
 
-    async create(): Promise<AccountEntity> {
-    const account = new AccountEntity();
+  async create(): Promise<AccountEntity> {
+    return this.accountRepository.manager.transaction(async (manager) => {
+      const account = manager.create(AccountEntity);
 
-    const savedAccount = await this.accountRepository.save(account);
-
-    return savedAccount;
+      return manager.save(account);
+    });
   }
 }
