@@ -6,6 +6,7 @@ import { ApiCodeResponse } from '../../common/api/data/enum/api-code-response.en
 import { ApiException } from '../../common/api/data/exception/api-exception';
 import { AccountResponseDto } from './data/dto/response/account-response.dto';
 import { AccountEntity } from './data/entity/account.entity';
+import { AccountStatus } from './data/enum/account-status.enum';
 
 @Injectable()
 export class AccountService {
@@ -15,11 +16,7 @@ export class AccountService {
   ) {}
 
   async findById(id: string): Promise<AccountEntity | null> {
-    const account = await this.accountRepository.findOneBy({
-      id: id,
-    });
-
-    return account;
+    return this.accountRepository.findOneBy({ id });
   }
 
   async me(accountId: string): Promise<AccountResponseDto> {
@@ -47,5 +44,9 @@ export class AccountService {
 
       return manager.save(account);
     });
+  }
+
+  canAuthenticate(account: AccountEntity): boolean {
+    return account.status === AccountStatus.Active;
   }
 }

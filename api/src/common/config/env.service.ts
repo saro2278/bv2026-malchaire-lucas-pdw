@@ -22,6 +22,10 @@ export class EnvService {
     return this.get(ConfigKey.AppBaseUrl);
   }
 
+  get corsOrigins(): string[] {
+    return this.get(ConfigKey.AppCorsOrigin);
+  }
+
   get httpPayloadErrorStatusCode(): number {
     return this.get(ConfigKey.AppHttpPayloadErrorCode);
   }
@@ -56,6 +60,14 @@ export class EnvService {
 
   get accessTokenTtlSeconds(): number {
     return this.get(ConfigKey.AuthAccessTokenTtlSeconds);
+  }
+
+  get refreshTokenTtlSeconds(): number {
+    return this.get(ConfigKey.AuthRefreshTokenTtlSeconds);
+  }
+
+  get sessionAbsoluteTtlSeconds(): number {
+    return this.get(ConfigKey.AuthSessionAbsoluteTtlSeconds);
   }
 
   get jwtIssuer(): string {

@@ -1,13 +1,16 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+
+import type { AuthContext } from '../auth/data/model/auth-context';
+import { CurrentAuth } from '../auth/decorator/current-auth.decorator';
 import { AccountService } from './account.service';
-import { AccountEntity } from './data/entity/account.entity';
+import { AccountResponseDto } from './data/dto/response/account-response.dto';
 
 @Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Post('create')
-  create(): Promise<AccountEntity> {
-    return this.accountService.create();
+  @Get('me')
+  me(@CurrentAuth() auth: AuthContext): Promise<AccountResponseDto> {
+    return this.accountService.me(auth.accountId);
   }
 }

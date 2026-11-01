@@ -40,11 +40,25 @@ export class PasswordCredentialEntity extends BasePersistenceEntity {
   failedAttempts!: number;
 
   @Column({
+    name: 'last_failed_at',
+    type: 'timestamptz',
+    nullable: true,
+  })
+  lastFailedAt!: Date | null;
+
+  @Column({
     name: 'locked_until',
     type: 'timestamptz',
     nullable: true,
   })
   lockedUntil!: Date | null;
+
+  @Column({
+    name: 'last_used_at',
+    type: 'timestamptz',
+    nullable: true,
+  })
+  lastUsedAt!: Date | null;
 
   @Column({
     name: 'changed_at',

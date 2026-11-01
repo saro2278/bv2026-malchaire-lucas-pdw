@@ -1,14 +1,15 @@
 import { RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
 
 import { EnvService } from '@common/config/env.service';
-import { AppModule } from '@root/app.module';
-import { AppLogger } from './common/logger/app-logger.service';
 import { ApiInterceptor } from './common/api/interceptor/api.interceptor';
 import { HttpExceptionFilter } from './common/api/filter/http-exception.filter';
 import { ValidationException } from './common/api/data/exception/validation-exception';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppLogger } from './common/logger/app-logger.service';
+import { AppModule } from './root/app.module';
 
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule.register(), {
@@ -19,12 +20,20 @@ const bootstrap = async () => {
 
   const envService = app.get(EnvService);
 
+  app.use(cookieParser());
+
+  app.enableCors({
+    origin: envService.corsOrigins,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'X-CSRF-Token'],
+  });
+
   app.setGlobalPrefix(envService.appBaseUrl, {
-  exclude: [
-    { path: 'health/live', method: RequestMethod.GET },
-    { path: 'health/ready', method: RequestMethod.GET },
-  ],
-});
+    exclude: [
+      { path: 'health/live', method: RequestMethod.GET },
+      { path: 'health/ready', method: RequestMethod.GET },
+    ],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -45,10 +54,10 @@ const bootstrap = async () => {
   app.useGlobalFilters(app.get(HttpExceptionFilter));
 
   const swaggerConfig = new DocumentBuilder()
-  .setTitle('API du cours')
-  .setDescription('Documentation et tests des routes')
-  .setVersion('1.0')
-  .build();
+    .setTitle('API du cours')
+    .setDescription('Documentation et tests des routes')
+    .setVersion('1.0')
+    .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
 

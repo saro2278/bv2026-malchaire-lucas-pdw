@@ -24,6 +24,15 @@ const environmentSchema = z
   .object({
     APP_PORT: z.coerce.number().int().min(1).max(65535).default(3000),
     APP_BASE_URL: z.string().min(1).default('api'),
+    APP_CORS_ORIGIN: z
+      .string()
+      .default('http://localhost:3000')
+      .transform((value) =>
+        value
+          .split(',')
+          .map((origin) => origin.trim())
+          .filter((origin) => origin.length > 0),
+      ),
     APP_HTTP_PAYLOAD_ERROR_CODE: z.coerce
       .number()
       .int()
@@ -75,6 +84,18 @@ const environmentSchema = z
       .max(600)
       .default(600),
 
+    AUTH_REFRESH_TOKEN_TTL_SECONDS: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .default(604800),
+
+    AUTH_SESSION_ABSOLUTE_TTL_SECONDS: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .default(2592000),
+
     AUTH_JWT_ISSUER: z.string().min(1).default('hoos-api'),
     AUTH_JWT_AUDIENCE: z.string().min(1).default('hoos-client'),
     AUTH_JWT_KEY_ID: z
@@ -112,6 +133,18 @@ const environmentSchema = z
         path: ['AUTH_PASSWORD_MAX_LENGTH'],
         message:
           'La longueur maximale doit être supérieure ou égale à la longueur minimale.',
+      });
+    }
+
+    if (
+      environment.AUTH_REFRESH_TOKEN_TTL_SECONDS >
+      environment.AUTH_SESSION_ABSOLUTE_TTL_SECONDS
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['AUTH_REFRESH_TOKEN_TTL_SECONDS'],
+        message:
+          'La durée du refresh token ne peut pas dépasser la durée maximale de session.',
       });
     }
   });
