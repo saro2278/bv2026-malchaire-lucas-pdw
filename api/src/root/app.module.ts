@@ -8,13 +8,14 @@ import { HttpExceptionFilter } from '../common/api/filter/http-exception.filter'
 import { DatabaseModule } from '../common/database/database.module';
 import { AccountModule } from '../core/account/account.module';
 import { HealthModule } from '@core/health';
+import { AuthModule } from '../core/auth/auth.module';
 
 @Module({})
 export class AppModule {
   static register(): DynamicModule {
     return {
       module: AppModule,
-      imports: [AppConfigModule.register(), AppLoggerModule, DatabaseModule, AccountModule, HealthModule,],
+      imports: [AppConfigModule.register(), AppLoggerModule, DatabaseModule, AccountModule, HealthModule, AuthModule],
       controllers: [AppController],
       providers: [AppService, ApiInterceptor, HttpExceptionFilter],
     };
