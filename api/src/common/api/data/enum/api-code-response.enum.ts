@@ -5,4 +5,5 @@ export enum ApiCodeResponse {
   CommonInvalidIdentifier = 'api.common.invalid-identifier',
   AccountNotFound = 'api.account.not-found',
   AuthUnauthorized = 'api.auth.unauthorized',
+  AuthCsrfInvalid = 'api.security.csrf-invalid',
 }

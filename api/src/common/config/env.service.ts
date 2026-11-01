@@ -1,32 +1,90 @@
 import { Injectable } from '@nestjs/common';
-import { ValidatedEnvironment } from './environment/environment.validation';
 import { ConfigService } from '@nestjs/config';
+
 import { AppMode, ConfigKey, LogLevel } from './data/enum';
+import { ValidatedEnvironment } from './environment/environment.validation';
+
 @Injectable()
 export class EnvService {
   constructor(
     private readonly configService: ConfigService<ValidatedEnvironment, true>,
   ) {}
+
   get appMode(): AppMode {
     return this.get(ConfigKey.NodeEnv);
   }
+
   get appPort(): number {
     return this.get(ConfigKey.Port);
   }
 
   get appBaseUrl(): string {
-  return this.get(ConfigKey.AppBaseUrl);
-}
+    return this.get(ConfigKey.AppBaseUrl);
+  }
 
   get httpPayloadErrorStatusCode(): number {
     return this.get(ConfigKey.AppHttpPayloadErrorCode);
   }
 
   get logLevel(): LogLevel {
-  return this.get(ConfigKey.LogLevel);
-}
+    return this.get(ConfigKey.LogLevel);
+  }
 
-  get<T extends keyof ValidatedEnvironment>(key: T): ValidatedEnvironment[T] {
+  get isProduction(): boolean {
+    return this.appMode === AppMode.Prod;
+  }
+
+  get passwordMinLength(): number {
+    return this.get(ConfigKey.AuthPasswordMinLength);
+  }
+
+  get passwordMaxLength(): number {
+    return this.get(ConfigKey.AuthPasswordMaxLength);
+  }
+
+  get passwordArgon2MemoryCost(): number {
+    return this.get(ConfigKey.AuthArgon2MemoryCost);
+  }
+
+  get passwordArgon2TimeCost(): number {
+    return this.get(ConfigKey.AuthArgon2TimeCost);
+  }
+
+  get passwordArgon2Parallelism(): number {
+    return this.get(ConfigKey.AuthArgon2Parallelism);
+  }
+
+  get accessTokenTtlSeconds(): number {
+    return this.get(ConfigKey.AuthAccessTokenTtlSeconds);
+  }
+
+  get jwtIssuer(): string {
+    return this.get(ConfigKey.AuthJwtIssuer);
+  }
+
+  get jwtAudience(): string {
+    return this.get(ConfigKey.AuthJwtAudience);
+  }
+
+  get jwtKeyId(): string {
+    return this.get(ConfigKey.AuthJwtKeyId);
+  }
+
+  get jwtPrivateKeyPem(): string {
+    return this.get(ConfigKey.AuthJwtPrivateKeyPem);
+  }
+
+  get jwtPublicKeyPem(): string {
+    return this.get(ConfigKey.AuthJwtPublicKeyPem);
+  }
+
+  get refreshTokenPepper(): string {
+    return this.get(ConfigKey.AuthRefreshTokenPepper);
+  }
+
+  get<T extends keyof ValidatedEnvironment>(
+    key: T,
+  ): ValidatedEnvironment[T] {
     return this.configService.getOrThrow(key, { infer: true });
   }
 }

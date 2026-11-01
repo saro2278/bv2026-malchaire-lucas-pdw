@@ -1,10 +1,25 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ValidatedEnvironment } from '../../config/environment/environment.validation';
+
 import { AppMode } from '../../config/data/enum';
+import { ValidatedEnvironment } from '../../config/environment/environment.validation';
 import { AccountEntity } from '../../../core/account/data/entity/account.entity';
 
+type DatabaseEnvironment = Pick<
+  ValidatedEnvironment,
+  | 'NODE_ENV'
+  | 'DB_TYPE'
+  | 'DB_HOST'
+  | 'DB_PORT'
+  | 'DB_USER'
+  | 'DB_PASSWORD'
+  | 'DB_DATABASE'
+  | 'DB_SCHEMA'
+  | 'DB_SYNC'
+  | 'DB_LOG'
+>;
+
 export function createTypeOrmOptions(
-  environment: ValidatedEnvironment,
+  environment: DatabaseEnvironment,
 ): TypeOrmModuleOptions {
   let synchronize = environment.DB_SYNC;
 
@@ -20,7 +35,7 @@ export function createTypeOrmOptions(
     password: environment.DB_PASSWORD,
     database: environment.DB_DATABASE,
     schema: environment.DB_SCHEMA,
-    synchronize: synchronize,
+    synchronize,
     logging: environment.DB_LOG,
     entities: [AccountEntity],
     autoLoadEntities: true,

@@ -4,4 +4,17 @@ export enum ConfigKey {
   Port = 'APP_PORT',
   AppHttpPayloadErrorCode = 'APP_HTTP_PAYLOAD_ERROR_CODE',
   AppBaseUrl = 'APP_BASE_URL',
+
+  AuthPasswordMinLength = 'AUTH_PASSWORD_MIN_LENGTH',
+  AuthPasswordMaxLength = 'AUTH_PASSWORD_MAX_LENGTH',
+  AuthArgon2MemoryCost = 'AUTH_ARGON2_MEMORY_COST',
+  AuthArgon2TimeCost = 'AUTH_ARGON2_TIME_COST',
+  AuthArgon2Parallelism = 'AUTH_ARGON2_PARALLELISM',
+  AuthAccessTokenTtlSeconds = 'AUTH_ACCESS_TOKEN_TTL_SECONDS',
+  AuthJwtIssuer = 'AUTH_JWT_ISSUER',
+  AuthJwtAudience = 'AUTH_JWT_AUDIENCE',
+  AuthJwtKeyId = 'AUTH_JWT_KEY_ID',
+  AuthJwtPrivateKeyPem = 'AUTH_JWT_PRIVATE_KEY_PEM',
+  AuthJwtPublicKeyPem = 'AUTH_JWT_PUBLIC_KEY_PEM',
+  AuthRefreshTokenPepper = 'AUTH_REFRESH_TOKEN_PEPPER',
 }
