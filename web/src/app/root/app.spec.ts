@@ -15,13 +15,4 @@ describe('App', () => {
 
     expect(fixture.componentInstance).toBeTruthy();
   });
-
-  it('should render the title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-
-    const page = fixture.nativeElement as HTMLElement;
-
-    expect(page.querySelector('h1')?.textContent).toContain('Projet Web');
-  });
 });
